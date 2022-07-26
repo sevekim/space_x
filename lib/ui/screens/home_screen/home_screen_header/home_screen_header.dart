@@ -15,7 +15,7 @@ class HomeScreenHeader extends StatelessWidget {
     );
 
     //Get the current date:
-    String currentTimeInUnit = provider.getQueryTimeRangeForDisplay();
+    String currentTimeInUnix = provider.getQueryTimeRangeForDisplay();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class HomeScreenHeader extends StatelessWidget {
           ),
         ),
         Text(
-          currentTimeInUnit,
+          currentTimeInUnix,
           style: commonSubheaderTextStyle,
         ),
       ],

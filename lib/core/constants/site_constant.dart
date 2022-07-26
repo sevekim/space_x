@@ -13,7 +13,7 @@ const double defaultModalHeight = 200.0;
 const String currentAPIType = prodURLText;
 
 //////////////////////////////////////////////
-///Time query in unit: 6 month (15778463 milli sec)
+///Time query in unix: 6 month (15778463 milli sec)
 //////////////////////////////////////////////
 
 const int timeQuery = 15778463;

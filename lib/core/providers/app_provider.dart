@@ -90,15 +90,15 @@ class AppProvider with ChangeNotifier {
     required BuildContext context,
   }) async {
     //Get the current date:
-    int currentTimeInUnit = getCurrentTimeInUnit();
+    int currentTimeInUnix = getCurrentTimeInUnix();
 
     // Getting all the 6 month upcoming launches
     await queryLaunchDateBasedOnDateDifference(
       context: context,
       httpURL: apiURL[upcomingAPI]!,
       dateQueryMap: {
-        "\$gte": currentTimeInUnit,
-        "\$lte": currentTimeInUnit + timeQuery
+        "\$gte": currentTimeInUnix,
+        "\$lte": currentTimeInUnix + timeQuery
       },
     );
 
@@ -107,8 +107,8 @@ class AppProvider with ChangeNotifier {
       context: context,
       httpURL: apiURL[queryAPI]!,
       dateQueryMap: {
-        "\$gte": currentTimeInUnit - timeQuery,
-        "\$lte": currentTimeInUnit
+        "\$gte": currentTimeInUnix - timeQuery,
+        "\$lte": currentTimeInUnix
       },
     );
 
@@ -156,7 +156,7 @@ class AppProvider with ChangeNotifier {
   ///
   /// **********************************************************************/
 
-  int getCurrentTimeInUnit() {
+  int getCurrentTimeInUnix() {
     //Get the current date:
     DateTime currentTime = DateTime.now();
     int currentTimeInUnix =
@@ -173,14 +173,14 @@ class AppProvider with ChangeNotifier {
 
   String getQueryTimeRangeForDisplay() {
     //Get the current date:
-    int currentTimeInUnit = getCurrentTimeInUnit();
+    int currentTimeInUnix = getCurrentTimeInUnix();
 
     String pastTimeLaunchMonthYear = getTimeQueryRangeInString(
-      timeInUnix: currentTimeInUnit - timeQuery,
+      timeInUnix: currentTimeInUnix - timeQuery,
     );
 
     String futureLaunchMonthYear = getTimeQueryRangeInString(
-      timeInUnix: currentTimeInUnit + timeQuery,
+      timeInUnix: currentTimeInUnix + timeQuery,
     );
 
     String queryTimeRange = "$pastTimeLaunchMonthYear - $futureLaunchMonthYear";
