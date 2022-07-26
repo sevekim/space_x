@@ -82,7 +82,7 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  /// Get initial launch data
+  /// Get initial data when app is started
   ///
   /// **********************************************************************/
 
@@ -152,7 +152,7 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  /// Get Single Launch Data
+  /// Get Current time in unix
   ///
   /// **********************************************************************/
 
@@ -190,7 +190,7 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  /// Get Single Launch Data time range
+  /// Get Single Launch Data time range in String
   ///
   /// **********************************************************************/
 
@@ -241,7 +241,7 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  /// Get initial launch data
+  /// Get SpaceX data
   ///
   /// **********************************************************************/
 
