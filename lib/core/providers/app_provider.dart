@@ -95,7 +95,6 @@ class AppProvider with ChangeNotifier {
     // Getting all the 6 month upcoming launches
     await queryLaunchDateBasedOnDateDifference(
       context: context,
-      httpURL: apiURL[upcomingAPI]!,
       dateQueryMap: {
         "\$gte": currentTimeInUnix,
         "\$lte": currentTimeInUnix + timeQuery
@@ -105,7 +104,6 @@ class AppProvider with ChangeNotifier {
     // Getting all the 6 month past launches
     await queryLaunchDateBasedOnDateDifference(
       context: context,
-      httpURL: apiURL[queryAPI]!,
       dateQueryMap: {
         "\$gte": currentTimeInUnix - timeQuery,
         "\$lte": currentTimeInUnix
@@ -131,7 +129,6 @@ class AppProvider with ChangeNotifier {
 
   Future<void> queryLaunchDateBasedOnDateDifference({
     required BuildContext context,
-    required String httpURL,
     required Map<String, int> dateQueryMap,
   }) async {
     //Past data
