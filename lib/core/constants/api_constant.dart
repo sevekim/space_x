@@ -18,6 +18,7 @@ const Map<String, String> spaceXBaseURL = {
 const Map<String, String> apiURL = {
   upcomingAPI: 'launches/upcoming',
   pastAPI: 'launches/past',
+  queryAPI: 'launches/query',
   rocketsAPI: 'rockets',
   launchPadsAPI: 'launchpads',
 };

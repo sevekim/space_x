@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 const String baseURL = "baseURL";
 const String upcomingAPI = "upcomingAPI";
 const String pastAPI = "pastAPI";
+const String queryAPI = "queryAPI";
 const String rocketsAPI = "rocketsAPI";
 const String launchPadsAPI = "launchPadsAPI";
 
@@ -66,3 +67,21 @@ const String generalError = 'noNgeneralErroretwork';
 
 const String mainBlue = 'mainBlue';
 const String defaultGrey = 'defaultGrey';
+const String launchedColor = 'launchedColor';
+const String launchedColorBackground = 'launchedColorBackground';
+const String upcomingColor = 'upcomingColor';
+const String upcomingColorBackground = 'upcomingColorBackground';
+const String mainBlackColor = 'mainblackColor';
+const String subTextColor = 'subTextColor';
+const String launchCardColor = 'launchCardColor';
+const String launchCardColorBackground = 'launchCardColorBackground';
+const String backgroundWhite = 'backgroundWhite';
+
+////////////////////////////////////////////////////////////////////////////////////////
+///Selector Screen types
+////////////////////////////////////////////////////////////////////////////////////////
+const String selectorScreenLoading = 'selectorScreenLoading';
+const String selectorScreenError = 'selectorScreenError';
+const String selectorScreenSuccess = 'selectorScreenSuccess';
+const String selectorScreenNoInfo = 'selectorScreenNoInfo';
+const String selectorScreenNetworkIssue = 'selectorScreenNetworkIssue';

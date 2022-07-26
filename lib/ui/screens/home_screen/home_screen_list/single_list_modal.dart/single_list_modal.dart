@@ -4,7 +4,6 @@ import 'package:space_x/core/model/upcoming_launch_model/upcoming_launch_model.d
 import 'package:space_x/core/providers/app_provider.dart';
 
 import '../../../../../core/constants/border_constant.dart';
-import '../../../../../core/constants/padding_constant.dart';
 import 'single_list_modal_selector.dart';
 
 class HomeScreenSingleListModal extends StatelessWidget {
@@ -35,11 +34,13 @@ class HomeScreenSingleListModal extends StatelessWidget {
         maxChildSize: 0.7,
         expand: false,
         builder: (BuildContext context, ScrollController scrollController) {
-          return Container(
-            padding: commonScaffoldScrollablePadding,
-            child: HomeScreenSingleListModalSelector(
-              scrollController: scrollController,
-              singleLaunchData: singleLaunchData,
+          return Scaffold(
+            extendBody: false,
+            body: SafeArea(
+              child: HomeScreenSingleListModalSelector(
+                scrollController: scrollController,
+                singleLaunchData: singleLaunchData,
+              ),
             ),
           );
         },

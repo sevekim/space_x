@@ -4,12 +4,14 @@ class RocketData {
   final String? name;
   final String? description;
   final String? wikipedia;
+  final List<dynamic>? flickrImages;
 
   RocketData({
     this.id,
     this.name,
     this.description,
     this.wikipedia,
+    this.flickrImages,
   });
 
   // /// factory.
@@ -25,6 +27,7 @@ class RocketData {
       name: doc['name'] ?? 0,
       description: doc['description'] ?? 'Unknown',
       wikipedia: doc['wikipedia'] ?? 'Unknown',
+      flickrImages: doc['flickr_images'] ?? [],
     );
   }
 }

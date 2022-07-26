@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:space_x/core/model/upcoming_launch_model/upcoming_launch_model.dart';
 import 'package:space_x/ui/widgets/common_show_snackbar.dart';
 
 import '../constants/api_constant.dart';
 import '../constants/screen_constant.dart';
+import '../constants/site_constant.dart';
 import '../constants/string_constant.dart';
 import '../http/http_request.dart';
 
@@ -19,20 +21,15 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  ///  Children Provider
-  ///
-  /// **********************************************************************/
-
-  /// **********************************************************************
-  ///
   /// Variables
   ///
   /// **********************************************************************/
 
-  List<dynamic> _upcomingLaunchData = [];
+  List<dynamic> _launchCollectionMapList = [];
   Map<String, dynamic> _launchPadData = {};
   Map<String, dynamic> _rocketData = {};
   bool _isSingleLaunchDataLoaded = false;
+  String _intialHomeScreenDataRetrieved = selectorScreenLoading;
 
   /// **********************************************************************
   ///
@@ -40,16 +37,11 @@ class AppProvider with ChangeNotifier {
   ///
   /// **********************************************************************/
 
-  List<dynamic> get upcomingLaunchData => _upcomingLaunchData;
+  List<dynamic> get launchCollectionMapList => _launchCollectionMapList;
   Map<String, dynamic> get launchPadData => _launchPadData;
   Map<String, dynamic> get rocketData => _rocketData;
   bool get isSingleLaunchDataLoaded => _isSingleLaunchDataLoaded;
-
-  /// **********************************************************************
-  ///
-  /// Setter
-  ///
-  /// **********************************************************************/
+  String get intialHomeScreenDataRetrieved => _intialHomeScreenDataRetrieved;
 
   /// **********************************************************************
   ///
@@ -58,15 +50,34 @@ class AppProvider with ChangeNotifier {
   /// **********************************************************************/
 
   void resetVariables() {
-    _upcomingLaunchData = [];
+    _launchCollectionMapList = [];
     _launchPadData = {};
     _rocketData = {};
+    _isSingleLaunchDataLoaded = false;
+    _intialHomeScreenDataRetrieved = selectorScreenLoading;
   }
 
   void resetSingleLaunchDat() {
     _launchPadData = {};
     _rocketData = {};
     _isSingleLaunchDataLoaded = false;
+  }
+
+  /// **********************************************************************
+  ///
+  /// Refresh the post main screen
+  ///
+  /// **********************************************************************/
+
+  Future<void> refreshPostMainScreen({
+    required BuildContext context,
+  }) async {
+    resetVariables();
+    notifyListeners();
+
+    await getInitialData(
+      context: context,
+    );
   }
 
   /// **********************************************************************
@@ -78,17 +89,125 @@ class AppProvider with ChangeNotifier {
   Future<void> getInitialData({
     required BuildContext context,
   }) async {
-    //Upcoming data
-    await getInitialLaunchData(
+    //Get the current date:
+    int currentTimeInUnit = getCurrentTimeInUnit();
+
+    // Getting all the 6 month upcoming launches
+    await queryLaunchDateBasedOnDateDifference(
       context: context,
       httpURL: apiURL[upcomingAPI]!,
+      dateQueryMap: {
+        "\$gte": currentTimeInUnit,
+        "\$lte": currentTimeInUnit + timeQuery
+      },
     );
 
-    //Past data
-    await getInitialLaunchData(
+    // Getting all the 6 month past launches
+    await queryLaunchDateBasedOnDateDifference(
       context: context,
-      httpURL: apiURL[pastAPI]!,
+      httpURL: apiURL[queryAPI]!,
+      dateQueryMap: {
+        "\$gte": currentTimeInUnit - timeQuery,
+        "\$lte": currentTimeInUnit
+      },
     );
+
+    //then reorganize the data based on the unix timestamp
+    _launchCollectionMapList.sort(
+      (a, b) => (b['date_unix']).compareTo(
+        a['date_unix'],
+      ),
+    );
+
+    _intialHomeScreenDataRetrieved = selectorScreenSuccess;
+    notifyListeners();
+  }
+
+  /// **********************************************************************
+  ///
+  /// Query Launch Data based on date difference
+  ///
+  /// **********************************************************************/
+
+  Future<void> queryLaunchDateBasedOnDateDifference({
+    required BuildContext context,
+    required String httpURL,
+    required Map<String, int> dateQueryMap,
+  }) async {
+    //Past data
+    await getSpaceXData(
+      context: context,
+      httpURL: apiURL[queryAPI]!,
+      httpRequestType: httpPOSTRequest,
+      jsonBody: {
+        "query": {
+          "date_unix": dateQueryMap,
+        },
+        "options": {
+          "pagination": false,
+        }
+      },
+    );
+  }
+
+  /// **********************************************************************
+  ///
+  /// Get Single Launch Data
+  ///
+  /// **********************************************************************/
+
+  int getCurrentTimeInUnit() {
+    //Get the current date:
+    DateTime currentTime = DateTime.now();
+    int currentTimeInUnix =
+        (currentTime.millisecondsSinceEpoch * 0.001).round();
+
+    return currentTimeInUnix;
+  }
+
+  /// **********************************************************************
+  ///
+  /// Get Single Launch Data time range
+  ///
+  /// **********************************************************************/
+
+  String getQueryTimeRangeForDisplay() {
+    //Get the current date:
+    int currentTimeInUnit = getCurrentTimeInUnit();
+
+    String pastTimeLaunchMonthYear = getTimeQueryRangeInString(
+      timeInUnix: currentTimeInUnit - timeQuery,
+    );
+
+    String futureLaunchMonthYear = getTimeQueryRangeInString(
+      timeInUnix: currentTimeInUnit + timeQuery,
+    );
+
+    String queryTimeRange = "$pastTimeLaunchMonthYear - $futureLaunchMonthYear";
+
+    return queryTimeRange;
+  }
+
+  /// **********************************************************************
+  ///
+  /// Get Single Launch Data time range
+  ///
+  /// **********************************************************************/
+
+  String getTimeQueryRangeInString({
+    required int timeInUnix,
+  }) {
+    //Get the current date:
+    //Get the launch time in Unix
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+      timeInUnix * 1000,
+    );
+
+    //Get the launch time in Month, Year
+    String dateMonth = DateFormat('MMMM').format(DateTime(0, dateTime.month));
+    String launchMonthYear = "$dateMonth, ${dateTime.year.toString()}";
+
+    return launchMonthYear;
   }
 
   /// **********************************************************************
@@ -102,15 +221,17 @@ class AppProvider with ChangeNotifier {
     required UpcomingLaunchData singleLaunchData,
   }) async {
     //Upcoming data
-    await getLaunchPadData(
+    await getSpaceXData(
       context: context,
       httpURL: "${apiURL[launchPadsAPI]!}/${singleLaunchData.launchpad!}",
+      apiEndPoint: launchPadsAPI,
     );
 
     //Past data
-    await getRocketData(
+    await getSpaceXData(
       context: context,
       httpURL: "${apiURL[rocketsAPI]!}/${singleLaunchData.rocket!}",
+      apiEndPoint: rocketsAPI,
     );
 
     _isSingleLaunchDataLoaded = true;
@@ -124,23 +245,27 @@ class AppProvider with ChangeNotifier {
   ///
   /// **********************************************************************/
 
-  Future<void> getInitialLaunchData({
+  Future<void> getSpaceXData({
     required BuildContext context,
     required String httpURL,
     Map<String, dynamic>? jsonBody,
+    String httpRequestType = httpGETRequest,
+    String? apiEndPoint,
   }) async {
     //Update the value
     Map<String, dynamic> response = await _httpRequest.httpREQUESTWrapper(
       httpURL: httpURL,
       context: context,
-      httpRequest: httpGETRequest,
+      httpRequest: httpRequestType,
       jsonBody: jsonBody,
     );
 
     //Return type: success
     if (response[httpRETURNType] == httpRETURNSuccessType) {
-      _upcomingLaunchData.addAll(
-        response[httpRETURNResponse].data,
+      //Process the data
+      await processHTTPReturnedData(
+        returnedData: response[httpRETURNResponse].data,
+        apiEndPoint: apiEndPoint,
       );
 
       //Return type: error
@@ -154,64 +279,26 @@ class AppProvider with ChangeNotifier {
 
   /// **********************************************************************
   ///
-  /// Get initial launch data
+  /// Handle fetched data
   ///
   /// **********************************************************************/
 
-  Future<void> getLaunchPadData({
-    required BuildContext context,
-    required String httpURL,
-    Map<String, dynamic>? jsonBody,
+  Future<void> processHTTPReturnedData({
+    required dynamic returnedData,
+    String? apiEndPoint,
   }) async {
-    //Update the value
-    Map<String, dynamic> response = await _httpRequest.httpREQUESTWrapper(
-      httpURL: httpURL,
-      context: context,
-      httpRequest: httpGETRequest,
-      jsonBody: jsonBody,
-    );
+    //Update LaunchPad data
+    if (apiEndPoint == launchPadsAPI) {
+      _launchPadData = returnedData;
 
-    //Return type: success
-    if (response[httpRETURNType] == httpRETURNSuccessType) {
-      _launchPadData = response[httpRETURNResponse].data;
+      //Update Rocket data
+    } else if (apiEndPoint == rocketsAPI) {
+      _rocketData = returnedData;
 
-      //Return type: error
-    } else if (response[httpRETURNType] == httpRETURNErrorType) {
-      errorResult(
-        context: context,
-        error: response[httpRETURNResponse],
-      );
-    }
-  }
-
-  /// **********************************************************************
-  ///
-  /// Get initial launch data
-  ///
-  /// **********************************************************************/
-
-  Future<void> getRocketData({
-    required BuildContext context,
-    required String httpURL,
-    Map<String, dynamic>? jsonBody,
-  }) async {
-    //Update the value
-    Map<String, dynamic> response = await _httpRequest.httpREQUESTWrapper(
-      httpURL: httpURL,
-      context: context,
-      httpRequest: httpGETRequest,
-      jsonBody: jsonBody,
-    );
-
-    //Return type: success
-    if (response[httpRETURNType] == httpRETURNSuccessType) {
-      _rocketData = response[httpRETURNResponse].data;
-
-      //Return type: error
-    } else if (response[httpRETURNType] == httpRETURNErrorType) {
-      errorResult(
-        context: context,
-        error: response[httpRETURNResponse],
+      //Update the Launch Data
+    } else {
+      _launchCollectionMapList.addAll(
+        returnedData['docs'],
       );
     }
   }

@@ -12,9 +12,10 @@ class UpcomingLaunchData {
   final String? launchpad;
   final String? date_utc;
   final String? date_local;
+  final int? date_unix;
   final String? date_precision;
   final String? details;
-  final bool? isUpcoming;
+  final bool? upcoming;
   final bool? auto_update;
   final int? flight_number;
   final Map<String, dynamic>? links;
@@ -27,12 +28,13 @@ class UpcomingLaunchData {
     this.launchpad,
     this.date_utc,
     this.date_precision,
-    this.isUpcoming,
+    this.upcoming,
     this.auto_update,
     this.flight_number,
     this.links,
     this.date_local,
     this.details,
+    this.date_unix,
   });
 
   /// factory.

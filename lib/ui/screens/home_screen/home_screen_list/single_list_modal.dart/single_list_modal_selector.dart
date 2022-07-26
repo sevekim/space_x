@@ -25,6 +25,7 @@ class HomeScreenSingleListModalSelector extends StatelessWidget {
             ? const CommonCircularLoading()
             : SingleListModalBuilder(
                 singleLaunchData: singleLaunchData,
+                scrollController: scrollController,
               );
       },
     );

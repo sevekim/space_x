@@ -4,7 +4,7 @@ import 'string_constant.dart';
 ///Screen constants
 //////////////////////////////////////////////
 
-const Map<String, dynamic> signInScreenConstants = {};
+const Map<String, dynamic> homeScreenConstants = {};
 
 //////////////////////////////////////////////
 ///Error Screen constants

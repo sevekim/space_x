@@ -10,7 +10,7 @@ class ShowSnackBar {
     String message = 'Temporarily disabled',
   }) {
     SnackBar snackBar = SnackBar(
-      backgroundColor: defaultColorPalette[mainBlue],
+      backgroundColor: defaultColorPalette[mainBlackColor],
       content: Text(
         message,
       ),
