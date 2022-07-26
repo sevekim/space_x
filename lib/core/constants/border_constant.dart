@@ -12,22 +12,10 @@ const BorderRadius defaultBorderRadius = BorderRadius.all(
   ),
 );
 
-/// **********************************************************************
-///
-/// Rounded Modal Border
-///
-/// **********************************************************************/
-
 const RoundedRectangleBorder defaultRoundedRectangleBorderForModal =
     RoundedRectangleBorder(
   borderRadius: defaultBorderRadiusTopOnly,
 );
-
-/// **********************************************************************
-///
-/// Default Radius Top only
-///
-/// **********************************************************************/
 
 const BorderRadius defaultBorderRadiusTopOnly = BorderRadius.only(
   topLeft: Radius.circular(

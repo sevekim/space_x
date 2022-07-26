@@ -14,13 +14,6 @@ class RocketData {
     this.flickrImages,
   });
 
-  // /// factory.
-  // factory RocketData.fromJson(Map<String, dynamic> json) =>
-  //     _$RocketDataFromJson(json);
-
-  // // To Json
-  // Map<String, dynamic> toJson() => _$RocketDataToJson(this);
-
   factory RocketData.fromDoc(Map<dynamic, dynamic> doc) {
     return RocketData(
       id: doc['id'] ?? 'Unknown',

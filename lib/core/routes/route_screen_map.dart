@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:space_x/ui/screens/app_stream_parent.dart';
+import 'package:space_x/ui/screens/app_stream_parent_selector.dart';
 
 /// **********************************************************************
 ///
@@ -8,11 +8,5 @@ import 'package:space_x/ui/screens/app_stream_parent.dart';
 /// **********************************************************************/
 
 Map<String, Widget Function(BuildContext)> routeScreenMap = {
-  /// **********************************************************************
-  ///
-  /// Home Screen
-  ///
-  /// **********************************************************************/
-
-  '/': (context) => const AppStreamParent(),
+  '/': (context) => const AppStreamParentSelector(),
 };

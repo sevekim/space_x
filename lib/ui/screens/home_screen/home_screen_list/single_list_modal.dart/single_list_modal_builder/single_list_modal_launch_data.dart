@@ -29,7 +29,7 @@ class SingleListModalLaunchDataBuilder extends StatelessWidget {
           body: singleLaunchData.name!,
         ),
         SingleListModalSingularInfo(
-          header: "Launch Local time",
+          header: "Launch local time",
           body: localTime,
         ),
         SingleListModalSingularInfo(

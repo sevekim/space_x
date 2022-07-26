@@ -18,11 +18,8 @@ class SingleListModalImageHolder extends StatelessWidget {
         imageURL,
         errorBuilder: (context, object, stackTrace) =>
             Container(), //Showing an empty holder
-        loadingBuilder: (
-          BuildContext context,
-          Widget child,
-          ImageChunkEvent? loadingProgress,
-        ) {
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) {
             return child;
           }
